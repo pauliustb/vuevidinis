@@ -2,7 +2,7 @@
 div.page.menu-paddingtop
   UserLoader(color="dark" v-if="loading")
   div(v-else)
-    TopPage(v-if="$user.get().role === 'mentorius' || $user.get().role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="false" v-bind:img="false" v-bind:lefto="false" v-bind:righto="'blue'")
+    TopPage(v-if="this.$store.getters['user/user'].role === 'mentorius' || this.$store.getters['user/user'].role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="false" v-bind:img="false" v-bind:lefto="false" v-bind:righto="'blue'")
       div.container
         div.listcontainer
           UserLoader(color="dark" v-if="loading")
@@ -48,7 +48,7 @@ div.page.menu-paddingtop
                     div.success(v-if="updateStepSuccess")
                       span {{$t('planas.atnaujinta')}}
                   div.buttons
-                    div(v-if="!editingItem && single.mentoriaus_paskirtas_statusas ==='aktyvus' && $user.get().role === 'frontuser'")
+                    div(v-if="!editingItem && single.mentoriaus_paskirtas_statusas ==='aktyvus' && this.$store.getters['user/user'].role === 'frontuser'")
                     BtnSimple(href="#" @click.prevent="editItem(singleEtapas, index)" v-bind:active="false" color="blue" v-bind:disabled="saveDisabled" v-bind:uppercase="false" v-bind:text="$t('planas.redaguoti')" textAligin="center")
                     div(v-if="editingItem === index")
                     BtnSimple(href="#" @click.prevent="cancelEdit()" v-bind:active="false" color="grey" v-bind:disabled="saveDisabled" v-bind:uppercase="false" v-bind:text="$t('planas.atsaukti')" textAligin="center")
@@ -76,7 +76,7 @@ div.page.menu-paddingtop
                     div.terminas-edit(v-else)
                       div.terminas-label
                         span.small-label {{$t('planas.terminas')}}
-                      date-picker(v-model="terminas" :disabled-date="notBeforeToday" default-value="2021-12-17" :class="{error: terminasError}" type="date" valueType="format" lang="lt")
+                      DatePicker(v-model="terminas" :disabled-date="notBeforeToday" :format-locale="lt" locale="lt" default-value="2021-12-17" :class="{error: terminasError}" type="date" value-type="format")
 
                   div.step-status.px-30.py-2(:class="{unfinished: !singleEtapas.status && editingItem !== index, finished: singleEtapas.status && editingItem !== index, editing: editingItem === index, active: savedStatus.includes(index)}")
                     div.status-content(v-if="editingItem !== index")
@@ -85,7 +85,7 @@ div.page.menu-paddingtop
                         div(v-if="loadingSaveStatus !== index" class="status-wrapper")
                           icon(:data="vykdomasData" width="40" height="40" color="#6B798B")
                           span.spantext {{ stepStatus(singleEtapas.status) }}
-                          div(v-if="$user.get().role === 'frontuser' && single.mentoriaus_paskirtas_statusas ==='aktyvus'")
+                          div(v-if="this.$store.getters['user/user'].role === 'frontuser' && single.mentoriaus_paskirtas_statusas ==='aktyvus'")
                             a(href="#" @click.prevent="completeStep(singleEtapas, index)") {{$t('planas.pazymetiivykdytu')}}
                       div.active(v-if="singleEtapas.status === true || savedStatus.includes(index)")
                         AnimatedCheckmark
@@ -107,7 +107,7 @@ div.page.menu-paddingtop
                   span {{$t('planas.nepavyko')}}
                 div.success(v-if="updateSuccess")
                   span {{$t('planas.atnaujinta')}}
-              div(v-if="$user.get().role === 'frontuser' && single.verslininko_paskirtas_statusas ==='aktyvus' || $user.get().role === 'mentorius' && single.mentoriaus_paskirtas_statusas ==='aktyvus' ")
+              div(v-if="this.$store.getters['user/user'].role === 'frontuser' && single.verslininko_paskirtas_statusas ==='aktyvus' || this.$store.getters['user/user'].role === 'mentorius' && single.mentoriaus_paskirtas_statusas ==='aktyvus' ")
               BtnSimple(href="#" @click.prevent="submit" v-bind:active="false" color="blue" :wider="true" v-bind:disabled="disabled" v-bind:loading="loadingBtn" v-bind:uppercase="false" v-bind:text="$t('planas.pazymetiivygdytu')" textAligin="center")
     div.container(v-else)
       h1.error {{$t('planas.prisijunkite')}}
@@ -127,7 +127,7 @@ import vykdomasData from '@/assets/svg/icon-vykdomas.svg'
 // import 'vue3-datepicker/locale/lt';
 // eslint-disable-next-line no-unused-vars
 import { format, parse } from 'date-fns';
-import { lt } from 'date-fns/locale'; // eslint-disable-line
+import lt from 'date-fns/locale/lt'; // eslint-disable-line
 
 export default {
 
@@ -423,7 +423,8 @@ h1
       display: none !important
   .single-etapas
     .terminas-edit
-      .mx-datepicker
+      //Pakeičiame mx-datepicker i vue3-datepicker-input
+      .vue3-datepicker-input
         width: 100%
     .buttons
       display: flex
@@ -440,10 +441,10 @@ h1
       min-height: 65px
       display: flex
       flex-wrap: wrap
-      gap: 0px 
+      gap: 0px
       @media(max-width: 1024px)
         margin-top: 5px
-        gap: 20px 
+        gap: 20px
         .step-status, .terminas, .rezultatas, .veiksmas
           padding-top: 1rem
           padding-bottom: 1rem
@@ -541,6 +542,12 @@ h1
       span
         color: #5A98C8
 
+    .veiksmas, .rezultatas
+      width: 30%
+
+    .terminas, .step-status
+      width: 20%
+
   .eilnr
     background: #25408F
     color: #fff
@@ -595,11 +602,11 @@ h1
     .split
       display: flex
       flex-wrap: wrap
-      gap: 20px 
+      gap: 20px
       @media(max-width: 1024px)
-        gap: 20px 
+        gap: 20px
       @media(max-width: 768px)
-        gap: 10px 
+        gap: 10px
     .more
       display: flex
       justify-content: center
@@ -648,5 +655,4 @@ h1
             max-height: 5000px
           .arrow
             transform: rotate(180deg)
-
 </style>

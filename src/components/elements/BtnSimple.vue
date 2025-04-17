@@ -80,7 +80,7 @@ export default {
     }
     &.left{
       text-align: left;
-          width: 100%;
+      width: 100%;
     }
     &.right{
     }
@@ -94,16 +94,16 @@ export default {
   &.white{
     color: #5A98C8;
     background-color: #F3F4F9;
-      >>>svg path{
-       fill: #5A98C8;
-      }
+    >>>svg path{
+      fill: #5A98C8;
+    }
     &:before{
       background-color: #DDE9F6;
     }
     &:hover,&.active,&:focus{
       color #5A98C8;
       >>>svg path{
-       fill: #5A98C8;
+        fill: #5A98C8;
       }
     }
   }
@@ -117,7 +117,7 @@ export default {
       background:#3a74a1;
       color #fff;
       >>>svg path{
-       fill: #fff;
+        fill: #fff;
       }
     }
   }
@@ -135,12 +135,26 @@ export default {
   &.grey{
     color: #5A98C8;
     background-color: #F3F4F9;
+
     &:before{
       background-color: #246CB5;
     }
     &:hover,&.active{
       background:#3a74a1;
       color #fff;
+
+      .text {
+        .t {
+          color: #fff;
+          font-size: 13px
+        }
+      }
+    }
+    .text {
+      .t {
+        color: #5A98C8;
+        font-size: 13px
+      }
     }
   }
   &.green{
@@ -159,8 +173,8 @@ export default {
         color #CFD5E1;
         pointer-events: none;
         &:before{
-        background-color: #F2F5F9;
-      }
+          background-color: #F2F5F9;
+        }
       }
     }
 
@@ -212,4 +226,12 @@ export default {
     padding: 10px 15px;
   }
 }
+
+  &.blue, &.darkblue, &.grey, &.green {
+    .text {
+      .t {
+        font-size: 13px;
+      }
+    }
+  }
 </style>

@@ -27,9 +27,10 @@ import SelectEl from '@/components/elements/SelectEl.vue';
 import UserWyswyg from '@/components/elements/Wyswyg.vue';
 import YesNo from '@/components/elements/YesNo.vue';
 import TextAreaCounter from '@/components/elements/TextAreaCounter.vue';
-import vSelect from 'vue-select';
+import vSelect from "vue-select";
+// import vSelect from 'vue-select';
 
-const app = createApp(App);
+const app = createApp(App).component("v-select", vSelect );
 let enabled = Cookies.get('treciujusaliu') !== '0';
 
 app.use(i18n);
@@ -73,7 +74,7 @@ const globalComponents = {
     UserWyswyg,
     YesNo,
     TextAreaCounter,
-    'v-select': vSelect
+    // 'v-select': vSelect
 };
 Object.entries(globalComponents).forEach(([name, component]) => app.component(name, component));
 

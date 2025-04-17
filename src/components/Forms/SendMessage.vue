@@ -12,7 +12,7 @@ div.sendmsg
       v-bind:error="errormessage" v-bind:disabled="disabled")
   div.btnc 
     div
-      UserBtn(v-bind:active="false" v-on:click="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('send')" textAligin="center")
+      UserBtn(v-bind:active="false" v-on:mousedown="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('send')" textAligin="center")
     div.rsp
       div(v-if="msg") {{msg}}
 </template>

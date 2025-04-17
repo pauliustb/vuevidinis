@@ -94,7 +94,6 @@ const actions = {
     return axios.post(`/wp-json/data/v1/message_send/?lang=${i18n.global.locale.value}`, {
       ...data,
     }).then((rsp) => {
-      console.log('SEND RESPONSE:', rsp.data); // 👈 padeda debuginti
       return rsp.data;
     });
   },
