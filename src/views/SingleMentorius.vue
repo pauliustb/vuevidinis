@@ -116,6 +116,9 @@
     },
     methods: {
       email() {
+        if(this.popup) {
+          return;
+        }
         this.popup = true;
       },
       closepopup() {

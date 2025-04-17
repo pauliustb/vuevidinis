@@ -128,7 +128,7 @@ export default {
     }
     .text {
       color: inherit !important;
-      font-size 13px
+      font-size 13px !important
     }
   }
 
