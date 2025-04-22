@@ -50,7 +50,7 @@
                               div.terminas
                                 div.terminas-label
                                   span {{$t('planas.terminas')}}
-                                date-picker(v-model="planItem.terminas" :disabled-date="notBeforeToday" :class="{error: planItem.terminasError}" type="date" valueType="format" :placeholder="$t('planas.terminas')" v-bind:disabled="disableAll" lang="lt")
+                                DatePicker(v-model="planItem.terminas" :disabled-date="notBeforeToday" :enable-time-picker="false" :class="{error: planItem.terminasError}" type="date" valueType="format" :placeholder="$t('planas.terminas')" v-bind:disabled="disableAll" locale='lt')
                               div.delete
                                 a(v-show="planItems.length > 1 && !disableAll" href="#" :title="$t('planas.istrintieilute')" @click.prevent.default="deletePlanItem(planItem)")
                                   icon(:data="closeData" width="20" height="20" color="#5A98C8")
@@ -107,9 +107,10 @@ import UserInput from '@/components/elements/Userinput.vue';
 import UserLoader from '@/components/elements/Loader.vue';
 import BtnSimple from '@/components/elements/BtnSimple.vue';
 import closeData from '@/assets/svg/close.svg'
-import DatePicker from 'vue3-datepicker';
-// import 'vue3-datepicker/locale/lt';
-// import lt from 'date-fns/locale/lt';
+// import DatePicker from 'vue3-datepicker';
+import DatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import { lt } from 'date-fns/locale'
 import '@/assets/css/custom-select.css';
 import "vue-select/dist/vue-select.css";
 
@@ -133,6 +134,7 @@ export default {
   data() {
     return {
       closeData,
+      lt,
       loadingIntro: true,
       loadingBtn: false,
       openedItems: [],
@@ -173,6 +175,8 @@ export default {
       return this.$store.getters['VeiksmuPlanas/keyword'];
     },
     list() {
+      console.log('------');
+      console.log(this.lt.code);
       return this.$store.getters['VeiksmuPlanas/list'];
     },
     total() {

@@ -2,7 +2,7 @@
 div.page.menu-paddingtop
   UserLoader(color="dark" v-if="loading")
   div(v-else)
-    TopPage(v-if="this.$store.getters['user/user'].role === 'mentorius' || this.$store.getters['user/user'].role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="false" v-bind:img="false" v-bind:lefto="false" v-bind:righto="'blue'")
+    TopPage(v-if="this.$store.getters['user/user'].role === 'mentorius' || this.$store.getters['user/user'].role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="false" v-bind:img="null" v-bind:lefto="false" v-bind:righto="'blue'")
       div.container
         div.listcontainer
           UserLoader(color="dark" v-if="loading")
@@ -61,14 +61,14 @@ div.page.menu-paddingtop
                       span {{singleEtapas.veiksmas}}
                     div.veiksmas-edit(v-else)
                       UserInput(:placeholder="$t('planas.veiksmas')" value="testas" type="textarea"
-                      maxlength="1500" :error="veiksmasError" v-model="veiksmas" :showLength="true" :showLabel="true")
+                      :maxlength="1500" :error="veiksmasError" v-model="veiksmas" :showLength="true" :showLabel="true")
                   div.rezultatas.px-30.py-2
                     div.content(v-if="editingItem !== index")
                       span.mobile-only {{$t('planas.siekrezultatas')+':'}}
                       span {{singleEtapas.siekiamas_rezultatas}}
                     div.rezultatas-edit(v-else)
                       UserInput(:placeholder="$t('planas.siekrezultatas')" type="textarea"
-                      maxlength="1500" :error="siekiamas_rezultatasError" v-model="siekiamas_rezultatas" :showLength="true" :showLabel="true")
+                      :maxlength="1500" :error="siekiamas_rezultatasError" v-model="siekiamas_rezultatas" :showLength="true" :showLabel="true")
                   div.terminas.px-30.py-2
                     div.content(v-if="editingItem !== index")
                       span.mobile-only {{$t('planas.singleterminas')+':'}}
@@ -76,7 +76,7 @@ div.page.menu-paddingtop
                     div.terminas-edit(v-else)
                       div.terminas-label
                         span.small-label {{$t('planas.terminas')}}
-                      DatePicker(v-model="terminas" :disabled-date="notBeforeToday" :format-locale="lt" locale="lt" default-value="2021-12-17" :class="{error: terminasError}" type="date" value-type="format")
+                      DatePicker(v-model="terminas" :disabled-date="notBeforeToday" :enable-time-picker="false" default-value="2021-12-17" :class="{error: terminasError}" type="date" valueType="format" locale='lt')
 
                   div.step-status.px-30.py-2(:class="{unfinished: !singleEtapas.status && editingItem !== index, finished: singleEtapas.status && editingItem !== index, editing: editingItem === index, active: savedStatus.includes(index)}")
                     div.status-content(v-if="editingItem !== index")
@@ -119,15 +119,16 @@ import { mapGetters } from 'vuex';
 import TopPage from '@/components/Blocks/TopPage.vue';
 import AnimatedCheckmark from '@/components/elements/AnimatedCheckmark.vue';
 import BtnSimple from '@/components/elements/BtnSimple.vue';
-import DatePicker from 'vue3-datepicker';
 import UserLoader from '@/components/elements/Loader.vue';
 import UserBtn from '@/components/elements/Btn.vue';
 import UserInput from '@/components/elements/Userinput.vue';
 import vykdomasData from '@/assets/svg/icon-vykdomas.svg'
-// import 'vue3-datepicker/locale/lt';
+import DatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
+import { lt } from 'date-fns/locale'
 // eslint-disable-next-line no-unused-vars
 import { format, parse } from 'date-fns';
-import lt from 'date-fns/locale/lt'; // eslint-disable-line
+
 
 export default {
 
@@ -144,6 +145,7 @@ export default {
   data() {
     return {
       vykdomasData,
+      lt,
       editing: false,
       loadingIntro: true,
       loadingBtn: false,
@@ -223,7 +225,7 @@ export default {
 
       this.editedItem.status = item.status;
       const date = parse(item.terminas, 'dd/MM/yyyy', new Date());
-      this.terminas = format(date, 'yyyy-MM-dd');
+      this.terminas = date;
       this.editedItem.uid = item.uid;
 
       return true;
@@ -258,6 +260,7 @@ export default {
       }
     },
     saveChange() {
+      console.log("Terminas prieš pakeitimą:", this.terminas);
       this.updateEmptyField = false;
       this.siekiamas_rezultatasError = false;
       this.veiksmasError = false;
@@ -350,6 +353,9 @@ export default {
       deep: false,
       immediate: true,
     },
+    terminas(newValue) {
+      console.log("Nauja termino reikšmė:", newValue);
+    }
   },
 };
 </script>
@@ -418,6 +424,7 @@ h1
       color: #e16969
 .etapai
   margin-top: 4rem
+  padding-bottom 290px
   @media(max-width: 1024px)
     .single-etapas-head
       display: none !important
