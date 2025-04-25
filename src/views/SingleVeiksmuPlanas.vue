@@ -2,7 +2,7 @@
 div.page.menu-paddingtop
   UserLoader(color="dark" v-if="loading")
   div(v-else)
-    TopPage(v-if="this.$store.getters['user/user'].role === 'mentorius' || this.$store.getters['user/user'].role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="false" v-bind:img="null" v-bind:lefto="false" v-bind:righto="'blue'")
+    TopPage(v-if="this.$store.getters['user/user'].role === 'mentorius' || this.$store.getters['user/user'].role === 'frontuser'" :title="$t('planas.veiksmuplanasnr')+' '+single.id" :text="null" v-bind:img="null" v-bind:lefto="false" v-bind:righto="'blue'")
       div.container
         div.listcontainer
           UserLoader(color="dark" v-if="loading")
@@ -115,7 +115,6 @@ div.page.menu-paddingtop
 
 <script>
 import { mapGetters } from 'vuex';
-// import { throttle } from 'throttle-debounce';
 import TopPage from '@/components/Blocks/TopPage.vue';
 import AnimatedCheckmark from '@/components/elements/AnimatedCheckmark.vue';
 import BtnSimple from '@/components/elements/BtnSimple.vue';
@@ -260,7 +259,6 @@ export default {
       }
     },
     saveChange() {
-      console.log("Terminas prieš pakeitimą:", this.terminas);
       this.updateEmptyField = false;
       this.siekiamas_rezultatasError = false;
       this.veiksmasError = false;
@@ -352,9 +350,6 @@ export default {
       },
       deep: false,
       immediate: true,
-    },
-    terminas(newValue) {
-      console.log("Nauja termino reikšmė:", newValue);
     }
   },
 };
@@ -430,7 +425,6 @@ h1
       display: none !important
   .single-etapas
     .terminas-edit
-      //Pakeičiame mx-datepicker i vue3-datepicker-input
       .vue3-datepicker-input
         width: 100%
     .buttons

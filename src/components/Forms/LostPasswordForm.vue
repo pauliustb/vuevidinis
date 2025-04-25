@@ -2,11 +2,10 @@
 div.form
   div.row
     UserInput(v-bind:placeholder="$t('user.email')" v-model="email" type="input"
-      v-on:click="submit"
       v-bind:error="errorEl" v-bind:disabled="false")
   div.btnc 
     div
-      UserBtn(v-bind:active="false" v-on:click="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.remind')" textAligin="center")
+      UserBtn(v-bind:active="false" v-on:mousedown="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.remind')" textAligin="center")
   div(v-if="msg" v-bind:style="{color:color}").msg {{msg}}
 </template>
 
@@ -37,7 +36,7 @@ export default {
   computed: {
   },
   methods: {
-    submit() {
+    async submit() {
       this.msg = false;
       this.errorEl = false;
       let valid = true;
@@ -47,7 +46,7 @@ export default {
       }
       if (valid) {
         this.loading = true;
-        this.$store.dispatch('user/lostPass', { email: this.email }).then((rsp) => {
+        await this.$store.dispatch('user/lostPass', { email: this.email }).then((rsp) => {
           this.loading = false;
           if (rsp.status === false) {
             this.color = 'red';

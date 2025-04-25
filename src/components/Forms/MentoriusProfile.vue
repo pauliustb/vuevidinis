@@ -9,15 +9,12 @@ div.profile
         form
           div.row
             UserInput(v-bind:placeholder="$t('user.vardas')+'*'" v-model="firstName" type="input"
-              v-on:click="submit"
               v-bind:error="errorfirstName" v-bind:disabled="disabled")
           div.row
             UserInput(v-bind:placeholder="$t('user.pavarde')+'*'" v-model="lastName" type="input"
-              v-on:click="submit"
               v-bind:error="errorlastName" v-bind:disabled="disabled")
           div.row
             UserInput(v-bind:placeholder="$t('user.email')" v-model="email" type="input"
-              v-on:click="submit"
               v-bind:error="false" v-bind:disabled="true")
           div.row
             UserInput(
@@ -31,11 +28,9 @@ div.profile
             p.error-message(v-if="errorPhoneNumber") {{$t('user.invalidPhoneNumber')}}
           div.row
             UserInput(v-bind:placeholder="$t('user.pareigosirimone')+'*'" v-model="pareigosirimone" type="input"
-              v-on:click="submit"
               v-bind:error="errorpareigosirimone" v-bind:disabled="disabled")
           div.row
             UserInput(v-bind:placeholder="$t('user.pareigosirimone')+' EN ('+$t('user.neprivaloma')+')'" v-model="pareigosirimoneen" type="input"
-              v-on:click="submit"
               v-bind:error="errorpareigosirimoneen" v-bind:disabled="disabled")
           div.row.sritys(v-if="tax" :class="{disabled:user.status ==='public' || disabled}")
             div.pl {{$t('vsritys')}}
@@ -56,10 +51,9 @@ div.profile
             div.pl {{$t('user.trunpasap')}} EN ({{$t('user.neprivaloma')}})
             TextAreaCounter(v-model="aprasymasen" v-bind:max="1500" v-bind:disabled="disabled" v-bind:error="erroraprasymasen")
           div.row
-            UploadFile(type="file" text="" v-bind:btntext="$t('user.addcv')" v-model="cv" v-bind:action="'user/EditCv'" v-bind:deleteAction="'user/Deletecv'" v-bind:id="false" v-bind:editable="true")
+            UploadFile(type="file" text="" v-bind:btntext="$t('user.addcv')" v-model="cv" v-bind:action="'user/EditCv'" v-bind:deleteAction="'user/Deletecv'" v-bind:id="false" v-bind:editable="true" v-bind:value="this.cv")
           div.row
             UserInput(v-bind:placeholder="$t('user.linkedin')" v-model="linkedin" type="input"
-              v-on:click="submit"
               v-bind:error="false" v-bind:disabled="disabled")
           div.row.aktyvi-paskyra(v-if="paskyrosUzimtumas")
             div.pl {{$t('vuzimtumas')}}
@@ -71,7 +65,7 @@ div.profile
                 div {{$t('vuzimtumasdesc')}}
           div.row.splitbtn
             div
-              UserBtn(v-bind:active="false" v-on:click="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.save')" textAligin="center")
+              UserBtn(v-bind:active="false" v-on:mousedown="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.save')" textAligin="center")
             div
               div.msg(v-if="msg") {{msg}}
       div.divas
@@ -220,7 +214,7 @@ export default {
           aprasymaslt: this.aprasymaslt,
           aprasymasen: this.aprasymasen,
           linkedin: this.linkedin,
-          phoneNumber: this.phoneNumber, 
+          phoneNumber: this.phoneNumber,
         }).then((data) => {
           this.loading = false;
           this.disabled = false;

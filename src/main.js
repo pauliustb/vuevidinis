@@ -14,6 +14,7 @@ import Cookies from 'js-cookie';
 import i18n from './i18n';
 import VueClickAway from 'vue3-click-away';
 import Popper from "vue3-popper";
+import { VueReCaptcha } from 'vue-recaptcha-v3'
 
 import Loader from '@/components/elements/Loader.vue';
 import UserBtn from '@/components/elements/Btn.vue';
@@ -33,6 +34,7 @@ import vSelect from "vue-select";
 const app = createApp(App).component("v-select", vSelect );
 let enabled = Cookies.get('treciujusaliu') !== '0';
 
+app.use(VueReCaptcha, { siteKey: '6LcO4NsqAAAAANStjRRXnzIr8Kszmu-_6tAy6W95' });
 app.use(i18n);
 app.use(VueGtag, { config: { id: 'G-01CZP75M2J' }, enabled });
 app.use(store);

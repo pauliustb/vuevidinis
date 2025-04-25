@@ -1,20 +1,17 @@
 <template lang="pug">
   div.form
     div.row
-      UserInput(v-bind:placeholder="$t('user.email')" v-bind:value="email" v-on:update:value="updateEmail" type="input"
-        v-on:click="submit"
+      UserInput(v-bind:placeholder="$t('user.email')" v-model="emailModel" v-on:update:value="updateEmail" type="input"
         v-bind:error="false" v-bind:disabled="true")
     div.row
-      UserInput(v-bind:placeholder="$t('user.password')" v-bind:value="password" v-on:update:value="updatePassword" type="password"
-        v-on:click="submit"
+      UserInput(v-bind:placeholder="$t('user.password')" v-model="password" v-on:update:value="updatePassword" type="password"
         v-bind:error="errorPass" v-bind:disabled="loading")
     div.row
-      UserInput(v-bind:placeholder="$t('user.cpassword')" v-bind:value="password2" v-on:update:value="updatePassword2" type="password"
-        v-on:click="submit"
+      UserInput(v-bind:placeholder="$t('user.cpassword')" v-model="password2" v-on:update:value="updatePassword2" type="password"
         v-bind:error="errorPass2" v-bind:disabled="loading")
-    div.btnc 
+    div.btnc
       div
-        UserBtn(v-bind:active="false" v-on:click="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.save')" textAligin="center")
+        UserBtn(v-bind:active="false" v-on:mousedown="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('user.save')" textAligin="center")
       div(v-if="msg" v-html="msg").msg
   </template>
   
@@ -33,13 +30,14 @@ import UserBtn from '@/components/elements/Btn.vue';
       return {
         password: '',
         password2: '',
+        emailModel: this.$props.email,
         errorPass: false,
         errorPass2: false,
         msg: false,
       };
     },
     methods: {
-      submit() {
+      async submit() {
         this.msg = false;
         this.errorPass = false;
         this.errorPass2 = false;
@@ -59,7 +57,7 @@ import UserBtn from '@/components/elements/Btn.vue';
         }
         if (valid) {
           this.loading = true;
-          this.$store.dispatch('User/restPassConfirm', { email: this.email, password: this.password, key: this.resetkey }).then((rsp) => {
+          await this.$store.dispatch('user/restPassConfirm', { email: this.email, password: this.password, key: this.$props.resetkey, }).then((rsp) => {
             this.loading = false;
             if (rsp.status === true) {
               this.msg = this.$t('password_changed');
@@ -70,7 +68,7 @@ import UserBtn from '@/components/elements/Btn.vue';
               this.msg = 'Error';
             }
           });
-        }      
+        }
       },
       updateEmail(value) {
         this.$emit('update:email', value); // Emit the updated email to the parent component

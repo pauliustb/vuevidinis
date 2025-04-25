@@ -93,7 +93,7 @@
     },
     data() {
       return {
-        faData,  // ✅ Icons restored
+        faData,
         lnData,
         googleData,
         email: '',
@@ -129,7 +129,11 @@
       validatePassword() {
         this.errorPass = !this.password.trim() || this.password.length < 6;  
       },
-      submit() {
+      async submit() {
+        await this.$recaptchaLoaded();
+        const token = await this.$recaptcha('login');
+        console.log(token);
+
         this.msg = false;
   
         if (this.errorEl || this.errorPass) {
@@ -139,8 +143,8 @@
   
         this.loading = true;
   
-        this.$store
-          .dispatch('user/logIn', { email: this.email, password: this.password })
+        await this.$store
+          .dispatch('user/logIn', { email: this.email, password: this.password, recaptchaToken: token })
           .then((rsp) => {
             this.loading = false;
             if (!rsp.status) {

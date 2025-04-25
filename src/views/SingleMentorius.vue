@@ -134,7 +134,6 @@
     actions: {
   getSingle({ commit }, slug) {
     return new Promise((resolve, reject) => {
-      // Perform async operation
       axios.get(`/api/items/${slug}`)
         .then(response => {
           commit('setSingle', response.data);

@@ -175,9 +175,16 @@ export default {
     &:hover,&.active,&:focus{
       border-color #2BAC76;
       color #2BAC76;
+
       >>>svg path{
        fill: #2BAC76;
       }
+    .text {
+      color: #2BAC76
+    }
+    }
+    .text {
+      font-size 13px
     }
     &:focus{
       color:#fff;
