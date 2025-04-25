@@ -92,6 +92,38 @@ const actions = {
     }
   },
 
+  async lostPass({ commit }, data) { // eslint-disable-line
+    return axios.post(`/wp-json/data/v1/lost/?lang=${i18n.global.locale.value}`, {
+      ...data,
+    }).then((rsp) => {
+      if (rsp.data && rsp.data.status === true) {
+        return { status: true };
+      }
+      return rsp.data;
+    }).catch((error) => {
+      if (error.response && error.response.data.message) {
+        return { status: false, msg: 'Error' };
+      }
+      return { status: false, msg: 'Connection error' };
+    });
+  },
+
+  async restPassConfirm({ commit }, data) { // eslint-disable-line
+    return axios.post(`/wp-json/data/v1/lost_reset/?lang=${i18n.global.locale.value}`, {
+      ...data,
+    }).then((rsp) => {
+      if (rsp.data && rsp.data.status === true) {
+        return { status: true };
+      }
+      return rsp.data;
+    }).catch((error) => {
+      if (error.response && error.response.data.message) {
+        return { status: false, msg: 'Error' };
+      }
+      return { status: false, msg: 'Connection error' };
+    });
+  },
+
   logOut({ commit }) {
     commit('setUser', { role: 'guest' });
     commit('setToken', '');
@@ -143,7 +175,6 @@ const actions = {
       });
 
       if (rsp.status) {
-        console.log(rsp)
         commit('setProfile', rsp.profile);
         return { status: true };
       }
@@ -156,8 +187,9 @@ const actions = {
   async EditCv(_, d) {
     const formData = new FormData();
     if (d.id) formData.append('id', d.id);
-    d.file.forEach(file => formData.append('files[]', file));
-
+    Array.from(d.file).forEach((e) => {
+      formData.append('files[]', e);
+    });
     try {
       const { data: rsp } = await axios.post('/wp-json/data/v1/user/editcv', formData);
       return rsp.success ? { status: true, files: rsp.data.files } : { status: false, text: rsp.message };

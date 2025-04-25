@@ -107,7 +107,6 @@ import UserInput from '@/components/elements/Userinput.vue';
 import UserLoader from '@/components/elements/Loader.vue';
 import BtnSimple from '@/components/elements/BtnSimple.vue';
 import closeData from '@/assets/svg/close.svg'
-// import DatePicker from 'vue3-datepicker';
 import DatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { lt } from 'date-fns/locale'
@@ -175,8 +174,6 @@ export default {
       return this.$store.getters['VeiksmuPlanas/keyword'];
     },
     list() {
-      console.log('------');
-      console.log(this.lt.code);
       return this.$store.getters['VeiksmuPlanas/list'];
     },
     total() {
@@ -266,7 +263,6 @@ export default {
           pagrindinisTikslas: this.pagrindinisTikslas,
           planSteps: this.planItems,
         }).then((data) => {
-          // this.loading = false;
           this.disabled = false;
           if (data.status === true) {
             this.msg = this.$t('user.successfullsave');

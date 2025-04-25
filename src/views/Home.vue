@@ -65,8 +65,7 @@ export default {
   },
   beforeUnmount() {
   },
-  // beforeDestroy() {
-  // },
+
 };
 </script>
 

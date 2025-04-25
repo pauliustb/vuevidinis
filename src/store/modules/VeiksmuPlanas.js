@@ -106,7 +106,6 @@ const actions = {
   },
 
   async setKeyword({ commit, dispatch }, data) {
-    // Atšaukite visas esamas užklausas, jei yra
     if (state.rq && state.rq.length > 0) {
       state.rq.forEach((e, index) => {
         e.cancel('Rewrite');

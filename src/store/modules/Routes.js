@@ -4,7 +4,7 @@ import i18n from '@/i18n';
 import router from '@/router';
 import { toRaw } from 'vue';
 
-// Import views (components) directly
+
 import NotFound from '@/views/NotFound.vue';
 import DefaultPage from '@/views/DefaultPage.vue';
 import UserEvents from '@/views/Events.vue';

@@ -105,9 +105,9 @@ export default {
         }
       } else {
         if(fileList.length > 0) {
-          this.list = this.list.concat( Array.from(fileList).map((elem) => {
-            return {name: elem.name, url: false};
-          }));
+          this.list = (Array.isArray(this.list) ? this.list : []).concat(
+              Array.from(fileList).map(elem => ({ name: elem.name, url: false }))
+          );
           this.$emit('input', this.list);
           this.disable = true;
           this.$store.dispatch(this.action, {file:fileList, id:this.id}).then(data=> {
@@ -131,13 +131,13 @@ export default {
       }
     },
     del(file, index) {
-      Vue.set( this.list, index, {...file, url: false} );
+      this.list[index] = { ...file, url: false };
       this.$emit('input', this.list);
       this.disable = true;
       this.$store.dispatch(this.deleteAction, {file:file, id:file.id}).then(data => {
         this.disable = false;
         if (data.status === false) {
-           Vue.set( this.list, index, {...file} );
+          this.list[index] = { ...file };
         } else {
           this.list = data.files;
         }
