@@ -30,7 +30,7 @@ div.profile
             UserInput(v-bind:placeholder="$t('user.pareigosirimone')+'*'" v-model="pareigosirimone" type="input"
               v-bind:error="errorpareigosirimone" v-bind:disabled="disabled")
           div.row
-            UserInput(v-bind:placeholder="$t('user.pareigosirimone')+' EN ('+$t('user.neprivaloma')+')'" v-model="pareigosirimoneen" type="input"
+            UserInput(v-bind:placeholder="$t('user.pareigosirimone')+' anglų kalba ('+$t('user.neprivaloma')+')'" v-model="pareigosirimoneen" type="input"
               v-bind:error="errorpareigosirimoneen" v-bind:disabled="disabled")
           div.row.sritys(v-if="tax" :class="{disabled:user.status ==='public' || disabled}")
             div.pl {{$t('vsritys')}}
@@ -48,7 +48,7 @@ div.profile
             div.pl {{$t('user.trunpasap')}}*
             TextAreaCounter(v-model="aprasymaslt" v-bind:max="1500" v-bind:disabled="disabled" v-bind:error="erroraprasymaslt")
           div.row
-            div.pl {{$t('user.trunpasap')}} EN ({{$t('user.neprivaloma')}})
+            div.pl {{$t('user.trunpasap')}} anglų kalba ({{$t('user.neprivaloma')}})
             TextAreaCounter(v-model="aprasymasen" v-bind:max="1500" v-bind:disabled="disabled" v-bind:error="erroraprasymasen")
           div.row
             UploadFile(type="file" text="" v-bind:btntext="$t('user.addcv')" v-model="cv" v-bind:action="'user/EditCv'" v-bind:deleteAction="'user/Deletecv'" v-bind:id="false" v-bind:editable="true" v-bind:value="this.cv")
