@@ -38,7 +38,8 @@ const mutations = {
     state.single = data;
   },
   tax(state, data) {
-    state.tax = data;
+    // state.tax = [...data.old, ...data.new];
+    state.tax = data.new;
   },
   setFilterTax(state, data) {
     const findIndex = state.filter.tax.findIndex((e) => e.slug === data.slug);
