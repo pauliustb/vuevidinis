@@ -114,7 +114,7 @@ export default {
       this.pareigosirimone = this.profile.pareigos_ir_imone;
       this.pareigosirimoneen = this.profile.pareigos_ir_imone_en;
       this.paskyrosUzimtumas = this.profile.paskyros_uzimtumas;
-      this.sritis = [...this.profile.sritis];
+      this.sritis = [...this.profile.sritis2];
       this.aprasymaslt = this.profile.aprasymas_lt;
       this.aprasymasen = this.profile.aprasymas_en;
       this.cv = this.profile.cv;
