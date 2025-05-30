@@ -15,6 +15,9 @@ const state = {
 
 const mutations = {
   setUser(state, data) {
+    if(data?.status === 'draft') {
+      return;
+    }
     if (data?.token) {
       state.token = data.token;
       localStorage.setItem('token', data.token);
@@ -75,6 +78,23 @@ const actions = {
       }
       return { status: false };
     } catch {
+      return { status: false, msg: 'Connection error' };
+    }
+  },
+
+  async getUserId() {
+    const token = localStorage.getItem('token');
+    if (!token) return { status: false };
+
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+    // axios.defaults.body = { token };
+
+    try {
+      const { data: rsp } = await axios.get('wp-json/data/v1/get-user-id/');
+      if (rsp) {
+        return rsp;
+      }
+    } catch (error) {
       return { status: false, msg: 'Connection error' };
     }
   },

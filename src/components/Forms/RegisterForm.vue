@@ -21,22 +21,19 @@ div.form
     div.name {{$t('registerpage.uzpildykiteforma')}}
   div.row
     UserInput(v-bind:placeholder="$t('user.email')" v-model="email" type="input"
-      v-on:click="submit"
       v-bind:error="errorEl" v-bind:disabled="loading")
   div.row
     UserInput(v-bind:placeholder="$t('user.password')" v-model="password" type="password"
-      v-on:click="submit"
       v-bind:error="errorPass" v-bind:disabled="loading")
   div.row
     UserInput(v-bind:placeholder="$t('user.cpassword')" v-model="password2" type="password"
-      v-on:click="submit"
       v-bind:error="errorPass2" v-bind:disabled="loading")
   div.row
     UserChekbox(v-model="sutinkuforma" dir="left" :placeholder="$t('user.iagre')" :error="sutinkuformaError")
   div.row
     UserChekbox(v-model="sutinkuforma2" dir="left" :placeholder="$t('user.iagre2')" :error="sutinkuformaError2")
   div.btnc
-    UserBtn(v-bind:active="false" v-on:click="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('register')" textAligin="center")
+    UserBtn(v-bind:active="false" v-on:mousedown="submit" color="blue" v-bind:disabled="false" v-bind:loading="loading" v-bind:uppercase="false" v-bind:text="$t('register')" textAligin="center")
   div(v-if="msg" v-html="msg").msg
 </template>
 
@@ -141,12 +138,12 @@ export default {
         this.loading = true;
         this.$store.dispatch('user/register', { email: this.email, password: this.password, type: this.type }).then((rsp) => {
           this.loading = false;
-          if (rsp.status === false) {
-            this.msg = rsp.msg;
-          } else {
-            this.$emit('Userregister');
+          this.msg = rsp.msg;
+          // if (rsp.status === false) {
+          // } else {
+            // this.$emit('Userregister');
             // logged in auto redirect
-          }
+          // }
         });
       }
     },
