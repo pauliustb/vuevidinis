@@ -20,8 +20,12 @@
                       div.text(v-if="item.text" v-html="item.text")
                       div.tax(v-if="item.taxs")
                         div(v-for="tax in item.taxs") {{tax}}
-                      div.btnc(v-if="$route.name==='SingleDynamicMentorius'")
+                      <star-rating :rating="average_rating" active-color="#246cb5" :show-rating="false" :star-size="20" :read-only="true" :increment="0.01"></star-rating>
+                      div.review-count(v-if="reviews > 0") {{$t('singlementorius.atsiliepimu')}}: {{ reviews }}
+                      div.review-count(v-else) Įvertinimų nėra
+                      div.btnc(v-if="$route.name==='SingleDynamicMentorius' && user.role === 'frontuser'")
                         UserBtn(v-bind:href="'#'" v-on:click="email" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.emailme')" textAligin="center")
+                        UserBtn(v-bind:href="'#'" v-on:click="review" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.review')" textAligin="center")
                       div.busy-mentor(v-if="item.paskyrosUzimtumas")
                         div.busy-icon
                           icon(:data="calendarData" width="20" height="20" color="#FFFFFF")
@@ -33,15 +37,15 @@
                         UserWyswyg(v-bind:html="item.html_text")
                     div.share(v-if="item.share_link")
                       UserShare(v-bind:url="item.share_link")
-                div.slot.atsiliepimai-wrapper(v-if="item.atsiliepimai && item.atsiliepimai.length")
-                  h3.lblue {{$t('singlementorius.atsiliepimai')}}
-                    span.smaller  ({{item.atsiliepimai.length}})
-                  MentoriusAtsiliepimai(:items="item.atsiliepimai")
                 div.slot
                   h3 {{$t('singlementorius.kiti')}}
                   div.max
                     MentoriaiFilter(v-bind:store="storeName")
                   MentoriaiList(v-bind:store="storeName")
+    FullScreenPopup(v-if="popupReview" v-on:close="closeReviewpopup")
+      div.popupiinfo
+        div.alert(v-if="$user.user.role !== 'guest' && user.status==='draft'") {{$t('user.msgwhendraft')}}
+        MentoriuView(v-bind:mentorId="item.id")
     FullScreenPopup(v-if="popup" v-on:close="closepopup")
       div.popupiinfo
         div.alert(v-if="$user.user.role === 'guest' && showlogin === false") {{$t('reikiaprisijungti')}}
@@ -58,7 +62,6 @@
   import UserShare from '@/components/Blocks/Share.vue';
   import MentoriaiFilter from '@/components/Blocks/MentoriaiFilter.vue';
   import MentoriaiList from '@/components/Blocks/MentoriaiList.vue';
-  import MentoriusAtsiliepimai from '@/components/Blocks/MentoriusAtsiliepimai.vue';
   import FullScreenPopup from '@/components/Blocks/FullScreenPopup.vue';
   import LoginForm from '@/components/Forms/LoginForm.vue';
   import LazyImg from '@/components/elements/LazyImg.vue';
@@ -69,6 +72,8 @@
   import { mapGetters } from 'vuex';
   import triangleData from '@/assets/svg/triangle_ornament.svg';
   import calendarData from '@/assets/svg/calendar-icon.svg';
+  import MentoriuView from '@/components/Forms/MentorReview.vue';
+  import StarRating from 'vue-star-rating';
   
   export default {
   
@@ -80,11 +85,12 @@
       FullScreenPopup,
       LoginForm,
       SendMessage,
-      MentoriusAtsiliepimai,
       LazyImg,
       UserLoader,
       UserBtn,
-      UserWyswyg
+      UserWyswyg,
+      MentoriuView,
+      StarRating,
     },
     created() {
   
@@ -95,7 +101,10 @@
         triangleData,
         loading: false,
         popup: false,
+        popupReview: false,
         showlogin: false,
+        reviews: [],
+        average_rating: 0,
       };
     },
     computed: {
@@ -115,6 +124,15 @@
   });
     },
     methods: {
+      review() {
+        if(this.popupReview) {
+          return;
+        }
+        this.popupReview = true;
+      },
+      closeReviewpopup() {
+        this.popupReview = false;
+      },
       email() {
         if(this.popup) {
           return;
@@ -129,6 +147,18 @@
       },
       userrloggedin() {
         this.showlogin = false;
+      },
+      async fetchReviews() {
+        try {
+          const response = await axios.get(`/wp-json/data/v1/get_reviews/?mentor_id=${this.item.id}`);
+
+          const { total_reviews, average_rating } = response.data;
+          this.reviews = total_reviews;
+          this.average_rating = average_rating || 0;
+
+        } catch (error) {
+          console.error('🔴 Klaida gaunant atsiliepimus:', error.response?.data || error.message);
+        }
       },
     },
     actions: {
@@ -150,13 +180,14 @@
     async handler() {
       this.loading = true;
       try {
-        await this.$store.dispatch(`${this.storeName}/getSingle`, this.$route.params.slug);  // Use await here
+        await this.$store.dispatch(`${this.storeName}/getSingle`, this.$route.params.slug);
         this.loading = false;
         if (!this.item) {
           this.$router.push({ name: 'Home' });
         } else if (this.storeName === 'MentoriaiDynamic' && this.item?.id) {
           await this.$store.dispatch('Statistic/setOpen', { id: this.item.id, taxs_id: this.item.taxs_id });
         }
+        await this.fetchReviews();
       } catch (error) {
         console.error('Error fetching item:', error);
         this.loading = false;
@@ -272,8 +303,10 @@
         margin-right: 3px
         margin-bottom: 3px
     .btnc
-      margin-top: 40px
+      margin-top: 20px
       margin-bottom: 0px
+      display flex
+      gap 10px
     .html
       margin-top: 40px
       margin-bottom: 40px
@@ -344,6 +377,15 @@
       transition: all 0.2s ease-in 0s
     >>> path[pid="2"]
       transition: all 0.2s ease-in 0.4s
+
+.vue-star-rating {
+  margin-top 20px
+}
+
+.review-count
+  font-size: 12px
+  color: #6B798B
+  margin-top: 4px
 
 .intro-enter
   .img

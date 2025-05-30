@@ -148,10 +148,16 @@
           .then((rsp) => {
             this.loading = false;
             if (!rsp.status) {
-              if (rsp.errorCode === 'incorrect_password') {
-                this.msg = this.$t('user.incorectempass');
-              } else {
-                this.msg = this.$t('Neteisingi duomenys');
+              switch (rsp.errorCode) {
+                case 'incorrect_password':
+                  this.msg = this.$t('user.incorectempass');
+                  break;
+                case 'draft':
+                  this.msg = this.$t('user.account_not_confirmed');
+                  break;
+                default:
+                  this.msg = this.$t('Neteisingi duomenys');
+                  break;
               }
             } else {
               this.$router.push({ name: 'Messages' });
