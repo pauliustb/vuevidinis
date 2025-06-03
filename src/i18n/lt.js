@@ -184,6 +184,8 @@ const locale = {
   privatumopolitika: 'Privatumo ir slapukų politika',
   writeletter: 'Rašyti laišką',
   writereview: 'Rašyti atsiliepimą',
+  reviews: 'Atsiliepimai',
+  no_reviews: 'Nėra atsiliepmų',
   send: 'Siųsti',
   msgsuccessfullysent: 'Žinutė sėkmingai išsiųsta.',
   rez: {

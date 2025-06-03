@@ -21,7 +21,7 @@
                       div.tax(v-if="item.taxs")
                         div(v-for="tax in item.taxs") {{tax}}
                       <star-rating :rating="average_rating" active-color="#246cb5" :show-rating="false" :star-size="20" :read-only="true" :increment="0.01"></star-rating>
-                      div.review-count(v-if="reviews > 0") {{$t('singlementorius.atsiliepimu')}}: {{ reviews }}
+                      div.review-count(v-if="reviews > 0" @click="reviewList" style="cursor: pointer") | {{$t('singlementorius.atsiliepimu')}}: {{ reviews }}
                       div.review-count(v-else) Įvertinimų nėra
                       div.btnc(v-if="$route.name==='SingleDynamicMentorius' && user.role === 'frontuser'")
                         UserBtn(v-bind:href="'#'" v-on:click="email" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.emailme')" textAligin="center")
@@ -46,6 +46,9 @@
       div.popupiinfo
         div.alert(v-if="$user.user.role !== 'guest' && user.status==='draft'") {{$t('user.msgwhendraft')}}
         MentoriuView(v-bind:mentorId="item.id")
+    FullScreenPopup(v-if="popupReviewList" v-on:close="closepopupReviewList")
+      div.popupiinfo
+        ReviewList(v-bind:mentorId="item.id")
     FullScreenPopup(v-if="popup" v-on:close="closepopup")
       div.popupiinfo
         div.alert(v-if="$user.user.role === 'guest' && showlogin === false") {{$t('reikiaprisijungti')}}
@@ -74,6 +77,7 @@
   import calendarData from '@/assets/svg/calendar-icon.svg';
   import MentoriuView from '@/components/Forms/MentorReview.vue';
   import StarRating from 'vue-star-rating';
+  import ReviewList from "@/components/Blocks/ReviewList.vue";
   
   export default {
   
@@ -91,6 +95,7 @@
       UserWyswyg,
       MentoriuView,
       StarRating,
+      ReviewList
     },
     created() {
   
@@ -102,8 +107,9 @@
         loading: false,
         popup: false,
         popupReview: false,
+        popupReviewList: false,
         showlogin: false,
-        reviews: [],
+        reviews: 0,
         average_rating: 0,
       };
     },
@@ -132,6 +138,15 @@
       },
       closeReviewpopup() {
         this.popupReview = false;
+      },
+      reviewList() {
+        if(this.popupReviewList) {
+          return;
+        }
+        this.popupReviewList = true;
+      },
+      closepopupReviewList() {
+        this.popupReviewList = false;
       },
       email() {
         if(this.popup) {

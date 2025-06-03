@@ -33,14 +33,14 @@
     data() {
       return {
         loadingBtn: false,
-        cancelTokenSource: null, // Pridedame cancelTokenSource
+        cancelTokenSource: null,
       };
     },
     created() {
-      this.cancelTokenSource = axios.CancelToken.source(); // Sukuriame cancelTokenSource
+      this.cancelTokenSource = axios.CancelToken.source();
       if (this.page === 0) {
         this.$store.dispatch(`${this.store}/getAll`, {
-          cancelToken: this.cancelTokenSource.token, // Perduodame cancelToken
+          cancelToken: this.cancelTokenSource.token,
         }).then(() => {
           // this.loading = false;
         });
@@ -69,7 +69,7 @@
       loadmore() {
         this.loadingBtn = true;
         this.$store.dispatch(`${this.store}/getAll`, {
-          cancelToken: this.cancelTokenSource.token, // Perduodame cancelToken
+          cancelToken: this.cancelTokenSource.token,
         }).then(() => {
           this.loadingBtn = false;
         });

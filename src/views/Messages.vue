@@ -14,7 +14,7 @@ div.page.menu-paddingtop
             div.list(v-if="list && list.length > 0")
               div.top.split
                 div
-                div {{$t('filter.data')}}
+                  div {{$t('filter.data')}}
                 div
                   span(v-if="$user.user.role === 'mentorius'") {{$t('messageauthor')}}
                   span(v-else) {{$t('messagegavejas')}}
