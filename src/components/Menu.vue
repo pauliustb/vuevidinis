@@ -37,7 +37,7 @@
                     router-link(:to="{name:'Profile'}") {{$t('user.profile')}}
                   li
                     a(v-on:click.prevent="logout" href="#") {{$t('user.logout')}}
-      MqResponsive(target="tablet")
+      MqResponsive(target="mobile")
         div.hamburger(:key="hamburgerKey")
             UserHamburger(v-on:click.native="togglemenu" :active="activeHamburger")
     transition(name="menu")
@@ -116,7 +116,7 @@ export default {
         this.hamburgerKey++;
       }
     }, 100);
-    await this.$store.dispatch('user/getUnreadMessages');
+    // await this.$store.dispatch('user/getUnreadMessages');
     await this.$store.dispatch('user/getUnreadPlans');
   },
   methods: {
@@ -141,7 +141,7 @@ export default {
   },
   created() {
     this.$store.dispatch("Menu/getMenu", this.$i18n.locale);
-    this.$store.dispatch('messages/getUnreadMessagesCount');
+    // this.$store.dispatch('messages/getUnreadMessagesCount');
     this.$store.dispatch('VeiksmuPlanas/getUnreadPlansCount');
     window.onscroll = () => {
       if (window.scrollY === 0) {

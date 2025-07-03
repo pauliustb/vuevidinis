@@ -4,6 +4,8 @@ const locale = {
   select: 'Pasirinkti',
   more: 'Daugiau',
   more2: 'Plačiau',
+  view: 'Peržiūrėti',
+  backtomessages: 'Grįžti į žinutes',
   event: 'Renginys',
   taip: 'Taip',
   ne: 'Ne',

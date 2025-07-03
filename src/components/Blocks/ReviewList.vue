@@ -58,7 +58,6 @@ export default {
     loadmore() {
       const nextCount = this.visibleReviewsCount + 3;
       this.visibleReviewsCount = Math.min(nextCount, this.reviews.length);
-      console.log('Visible reviews:', this.visibleReviewsCount, '/', this.reviews.length);
     }
   },
 };

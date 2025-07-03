@@ -1,7 +1,29 @@
 import axios from 'axios';
 import i18n from '@/i18n';
 
-const accessToken = localStorage.getItem('token');
+
+function getLocalStorageToken() {
+  const tokenData = localStorage.getItem('token_data');
+  if (tokenData) {
+    try {
+      const { token, expiry } = JSON.parse(tokenData);
+      if (new Date().getTime() < expiry) {
+        return token;
+      } else {
+        // Token has expired, remove it
+        localStorage.removeItem('token_data');
+        return null;
+      }
+    } catch (e) {
+      console.error('Failed to parse token data from localStorage:', e);
+      localStorage.removeItem('token_data'); // Clear corrupted data
+      return null;
+    }
+  }
+  return null;
+}
+
+const accessToken = getLocalStorageToken();
 if (accessToken) {
   axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 }
@@ -20,7 +42,8 @@ const mutations = {
     }
     if (data?.token) {
       state.token = data.token;
-      localStorage.setItem('token', data.token);
+      const expiryTime = new Date().getTime() + 6 * 60 * 60 * 1000;
+      localStorage.setItem('token_data', JSON.stringify({ token: data.token, expiry: expiryTime }));
       axios.defaults.headers.common.Authorization = `Bearer ${data.token}`;
     }
     state.user = { ...state.user, ...data };
@@ -28,10 +51,11 @@ const mutations = {
   setToken(state, token) {
     state.token = token;
     if (token) {
-      localStorage.setItem('token', token);
+      const expiryTime = new Date().getTime() + 6 * 60 * 60 * 1000;
+      localStorage.setItem('token_data', JSON.stringify({ token: token, expiry: expiryTime }));
       axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     } else {
-      localStorage.removeItem('token');
+      localStorage.removeItem('token_data');
       delete axios.defaults.headers.common.Authorization;
     }
   },
@@ -40,9 +64,7 @@ const mutations = {
       state.profile = { ...data }
     } else {
       console.error('setProfile: received undefined data');
-
     }
-    // state.profile = data;
   },
   setResults(state, data) {
     state.results = data;
@@ -64,11 +86,14 @@ const actions = {
   },
 
   async getCurrent({ commit }) {
-    const token = localStorage.getItem('token');
-    if (!token) return { status: false };
+    const token = getLocalStorageToken();
+    if (!token) {
+      commit('setToken', '');
+      return { status: false };
+    }
 
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    // console.log(token);
+    console.log(token);
     try {
       const { data: rsp } = await axios.get('/wp-json/data/v1/user/');
 
@@ -76,18 +101,19 @@ const actions = {
         commit('setUser', rsp.user);
         return { status: true, role: rsp.user.role, user: rsp.user };
       }
+      commit('setToken', '');
       return { status: false };
     } catch {
+      commit('setToken', '');
       return { status: false, msg: 'Connection error' };
     }
   },
 
   async getUserId() {
-    const token = localStorage.getItem('token');
+    const token = getLocalStorageToken();
     if (!token) return { status: false };
 
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    // axios.defaults.body = { token };
 
     try {
       const { data: rsp } = await axios.get('wp-json/data/v1/get-user-id/');
@@ -186,7 +212,8 @@ const actions = {
 
   async getProfile({ commit }) {
     try {
-      const token = state.token;
+      const token = getLocalStorageToken();
+      if (!token) return { status: false };
 
       const { data: rsp } = await axios.get('/wp-json/data/v1/user-profile/', {
         headers: {
@@ -229,7 +256,8 @@ const actions = {
 
   async saveProfile(_, data) {
     try {
-      const token = state.token;
+      const token = getLocalStorageToken();
+      if (!token) return { status: false };
 
       const { data: rsp } = await axios.post('/wp-json/data/v1/save_profile/', data, {
         headers: {
@@ -266,15 +294,7 @@ const actions = {
       return { status: false, msg: 'Connection error' };
     }
   },
-  async getUnreadMessages({ commit, dispatch }) {
-    try {
-      const count = await dispatch('messages/getUnreadMessagesCount', null, { root: true });
-      commit('setUnreadMessages', count);
-      return { status: true };
-    } catch (error) {
-      return { status: false, msg: 'Connection error' };
-    }
-  },
+
   async getUnreadPlans({ commit, dispatch }) {
     try {
       await dispatch('VeiksmuPlanas/getUnreadPlansCount', null, { root: true });

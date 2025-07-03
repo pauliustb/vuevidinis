@@ -23,6 +23,7 @@ import Profile from './views/userActions/Profile.vue';
 import ResetPass from './views/userActions/ResetPass.vue';
 import UserResults from './views/userActions/Results.vue';
 import VeiksmuPlanas from './views/VeiksmuPlanas.vue';
+import Conversation from "@/views/Conversation.vue";
 
 const globalinfo = window.globalinfo || { lang: 'lt' };
 const prefx = globalinfo.lang !== 'lt' ? `/${globalinfo.lang}` : '';
@@ -69,15 +70,6 @@ const routes = [
     meta: {
       id: 178,
       title: 'Mentoriai „Spiečiuose“',
-    },
-  },
-  {
-    path: `/e-mentoriai`,
-    name: 'MentoriaiDynamic',
-    component: MentoriaiDynamic,
-    meta: {
-      id: 178,
-      title: 'E. mentoriai',
     },
   },
   {
@@ -257,6 +249,14 @@ const routes = [
     component: SingleVeiksmuPlanas,
   },
   {
+    path: `/pokalbis/:id`,
+    name: 'UserConversation',
+    component: Conversation,
+    meta: {
+      title: 'Pokalbis',
+    },
+  },
+  {
     path: `${prefx}/apklausa/:id/:userHash`,
     name: 'SingleApklausa',
     component: SingleApklausa,
@@ -264,11 +264,6 @@ const routes = [
   {
     path: `${prefx}/mentorius/:slug`,
     name: 'SingleDynamicMentorius',
-    component: SingleMentorius,
-  },
-  {
-    path: `${prefx}/mentoriai-spieciuose/:slug`,
-    name: 'SingleStaticMentorius',
     component: SingleMentorius,
   },
   {
