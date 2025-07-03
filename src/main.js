@@ -44,8 +44,7 @@ app.use(VueAxios, axios);
 app.use(VueSvgIconPlugin, { tagName: 'icon' });
 app.use(Vue3Mq, {
     breakpoints: {
-        sm: 0,
-        tablet: 768,
+        mobile: 0,
         desktop: 1200,
     },
 });
@@ -93,8 +92,13 @@ app.config.globalProperties.$user = store.state.user;
 store.dispatch('Pages/getHome')
     .then(() => router.isReady())
     .then(() => store.dispatch('user/getCurrent'))
-    .then((user) => {
-        store.commit('user/setUser', user.status ? { role: user.role, status: user.status } : { role: 'guest' });
+    .then((result) => {
+
+        if (result.status && result.user) {
+            store.commit('user/setUser', { role: result.role, ...result.user });
+        } else {
+            store.dispatch('user/logOut');
+        }
         app.mount('#app');
     })
     .catch(error => {

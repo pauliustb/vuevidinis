@@ -12,17 +12,11 @@ const state = {
 };
 
 const mutations = {
-  list(state, data) {
-    state.list = state.list.concat(data);
+  setList(state, data) {
+    state.list = data;
   },
   clear(state) {
     state.list = [];
-  },
-  total(state, data) {
-    state.total = data;
-  },
-  addPage(state) {
-    state.page += 1;
   },
   page(state, data) {
     state.page = data;
@@ -40,52 +34,24 @@ const mutations = {
   addrequest(state, data) {
     state.rq.push(data);
   },
-  removerequest(state, index) {
-    state.rq.splice(index, 1);
-  },
-  setCount(state, data) {
-    state.unreadmessages = data;
-  },
 };
 
 const actions = {
   get({ commit }) {
-    if (state.page === 0) {
-      commit('setLoading', true);
-    }
+    commit('setLoading', true);
+
     const request = axios.CancelToken.source();
     commit('addrequest', request);
-    return axios.post(`/wp-json/data/v1/get_messages/${state.page}/?lang=${i18n.global.locale.value}`, {
-      keyword: state.keyword,
-    }, { cancelToken: request.token }).then((rsp) => {
+
+    return axios.get(`/wp-json/data/v1/get_conversations/`, {
+      cancelToken: request.token
+    }).then((rsp) => {
       commit('setLoading', false);
       if (rsp.data) {
-        commit('addPage');
-        commit('list', rsp.data.list);
-        commit('total', rsp.data.total);
+        commit('setList', rsp.data);
       }
-    });
-  },
-  getUnreadMessagesCount({ commit }) {
-    return axios.get(`/wp-json/data/v1/get_messages_status/?lang=${i18n.global.locale.value}`, {
-    }).then((rsp) => {
-      if (rsp.data) {
-        commit('setCount', rsp.data.total);
-        return rsp.data.total;
-      }
-    });
-  },
-  setKeyword({ commit, dispatch }, data) {
-    commit('setKeyword', data);
-    commit('page', 0);
-    commit('clear');
-    return dispatch('get');
-  },
-  open({ commit }, id) { // eslint-disable-line
-    commit('openmsg', id);
-    return axios.post(`/wp-json/data/v1/message_open/?lang=${i18n.global.locale.value}`, {
-      id,
-    }).then(() => {
+    }).catch(() => {
+      commit('setLoading', false);
     });
   },
   send({ commit }, data) { // eslint-disable-line
@@ -109,14 +75,8 @@ const getters = {
   total(state) {
     return state.total;
   },
-  keyword() {
-    return state.keyword;
-  },
   loading(state) {
     return state.loading;
-  },
-  unreadmessages(state) {
-    return state.unreadmessages;
   },
 };
 

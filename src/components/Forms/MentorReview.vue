@@ -31,8 +31,7 @@ export default {
     StarRating,
   },
   created() {
-    console.log(this.$props.mentorId);
-    console.log(this.$user);
+
   },
   data() {
     return {

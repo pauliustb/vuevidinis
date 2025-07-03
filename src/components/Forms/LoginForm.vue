@@ -132,7 +132,6 @@
       async submit() {
         await this.$recaptchaLoaded();
         const token = await this.$recaptcha('login');
-        console.log(token);
 
         this.msg = false;
   
