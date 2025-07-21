@@ -93,7 +93,7 @@ const actions = {
     }
 
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-    console.log(token);
+
     try {
       const { data: rsp } = await axios.get('/wp-json/data/v1/user/');
 

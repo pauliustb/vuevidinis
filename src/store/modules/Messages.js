@@ -8,7 +8,7 @@ const state = {
   keyword: '',
   loading: true,
   rq: [],
-  unreadmessages: 0,
+  hasUnreadMessages: false,
 };
 
 const mutations = {
@@ -29,15 +29,18 @@ const mutations = {
   },
   openmsg(state, id) {
     const item = state.list.find((e) => e.id === id);
-    item.open = true;
+    if (item) item.open = true;
   },
   addrequest(state, data) {
     state.rq.push(data);
   },
+  setHasUnreadMessages(state, value) {
+    state.hasUnreadMessages = value;
+  }
 };
 
 const actions = {
-  get({ commit }) {
+  get({ commit, rootState }) {
     commit('setLoading', true);
 
     const request = axios.CancelToken.source();
@@ -47,13 +50,33 @@ const actions = {
       cancelToken: request.token
     }).then((rsp) => {
       commit('setLoading', false);
+
       if (rsp.data) {
         commit('setList', rsp.data);
+
+        const role = rootState.user.user.role;
+
+        let hasUnread = false;
+
+        for (const convo of rsp.data) {
+          if ((role === 'user' || role === 'frontuser') && convo.is_user_read === "0") {
+            hasUnread = true;
+            break;
+          }
+          if (role === 'mentorius' && convo.is_mentor_read === "0") {
+            hasUnread = true;
+            break;
+          }
+        }
+
+        commit('setHasUnreadMessages', hasUnread);
       }
-    }).catch(() => {
+    }).catch((error) => {
+      console.error('Error fetching conversations:', error);
       commit('setLoading', false);
     });
   },
+
   send({ commit }, data) { // eslint-disable-line
     commit('page', 0);
     commit('clear');
@@ -62,7 +85,7 @@ const actions = {
     }).then((rsp) => {
       return rsp.data;
     });
-  },
+  }
 };
 
 const getters = {
@@ -78,6 +101,9 @@ const getters = {
   loading(state) {
     return state.loading;
   },
+  hasUnreadMessages(state) {
+    return state.hasUnreadMessages;
+  }
 };
 
 export default {

@@ -119,7 +119,7 @@ const locale = {
     cannotbefound: 'Neįmanoma rasti šio el. pašto adreso.',
     successfullysent: 'Sėkmingai išsiųsta. Patikrinkite savo el. paštą.',
     iagre: 'Sutinku su <a target=_BLANK href=/privatumo-politika/>Privatumo politika</a>',
-    iagre2: 'Susipažinau ir sutinku su VŠĮ „Versli Lietuva“ Verslo mentorių tinklo narių atrankos ir veiklos  organizavimo tvarkos aprašu',
+    iagre2: 'Susipažinau ir sutinku su Inovacijų agentūros Verslo mentorių tinklo narių atrankos ir veiklos organizavimo <a target="_BLANK" href="https://test-mentoriai.inovacijuagentura.lt/wp-content/uploads/2024/10/mentorystes-taisykles.pdf">taisyklėmis</a>',
     msgwhendraft: 'Užpildykite privalomus profilio laukus. Jūsų anketos patvirtinimas bus atsiųstas nurodytu el. pašto adresu.',
     typementorius: 'Vartotojas mentorius',
     typeUser: 'Vartotojas',
