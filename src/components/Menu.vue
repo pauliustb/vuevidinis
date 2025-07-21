@@ -23,7 +23,7 @@
           router-link(v-if="user.role === 'mentorius' && user.status === 'public'" :to="{name:'Results'}" active-class="active" :title="$t('customMenu.statistika')").rez
             icon(:data="resultData" color="#5A98C8" width="18" height="15")
           router-link(v-if="user.status === 'public'" :to="{name:'zinutes'}" active-class="active" :title="$t('customMenu.zinutes')") 
-            icon(v-if="this.$user.unreadmessages > 0" :data="messagesnewData" color="#FFD400 #5A98C8" width="20" height="15")
+            icon(v-if="hasUnreadMessages" :data="messagesnewData" color="#FFD400 #5A98C8" width="20" height="15")
             icon(v-else :data="messagesData" color="#5A98C8" width="20" height="15")
           div.profile
             DropDown(color="blue")
@@ -87,7 +87,7 @@ export default {
       messagesnewData,
       messagesData,
       min: false,
-      hamburgerKey: 0, // Pridėta key savybė
+      hamburgerKey: 0,
     };
   },
   computed: {
@@ -100,6 +100,7 @@ export default {
       unreadmessages: "unreadmessages",
       unreadplans: "unreadplans",
     }),
+    ...mapGetters("messages", ["hasUnreadMessages"]),
     mqIsReady() {
       return this.mq !== undefined;
     },
@@ -141,7 +142,7 @@ export default {
   },
   created() {
     this.$store.dispatch("Menu/getMenu", this.$i18n.locale);
-    // this.$store.dispatch('messages/getUnreadMessagesCount');
+    this.$store.dispatch("messages/get");
     this.$store.dispatch('VeiksmuPlanas/getUnreadPlansCount');
     window.onscroll = () => {
       if (window.scrollY === 0) {

@@ -6,16 +6,20 @@
         div.container
           div.listcontainer
             UserLoader(color="dark" v-if="loading")
+
             div(v-else)
               div.list(v-if="list && list.length > 0")
                 div.item(v-for="item in list" :key="item.id")
                   .maininfo
-                    h3(:class="{ 'unread': !item.is_read }") {{ item.convo_title }}
-                    p(:class="{ 'unread': !item.is_read }") {{ item.author_name }}
-                    p(:class="{ 'unread': !item.is_read }") {{ item.mentor_name }}
-                    p(:class="{ 'unread': !item.is_read }") {{ item.created_at }}
-                    UserBtn(v-on:mousedown="openConversation(item.id)" v-bind:active="false" color="blue" v-bind:disabled="false" v-bind:uppercase="false" v-bind:text="$t('view')" textAligin="center")
-              div(v-else) No messages
+                    div.conversationinfo
+                      h3(:class="{ 'unread': !item.is_read }") {{ item.convo_title }}
+                      p(:class="{ 'unread': !item.is_read }") {{ item.author_name }}
+                      p(:class="{ 'unread': !item.is_read }") {{ item.mentor_name }}
+                      p(:class="{ 'unread': !item.is_read }") {{ item.created_at }}
+                    div.conversationbutton
+                      UserBtn(v-on:mousedown="openConversation(item.id)" v-bind:active="false" color="blue" v-bind:disabled="false" v-bind:uppercase="false" v-bind:text="$t('view')" textAligin="center")
+              div(v-else) {{$t('nomessages')}}
+
 </template>
 
 <script>
@@ -100,6 +104,34 @@ export default {
       justify-content space-between
       align-items center
 
+      .conversationinfo
+        display flex
+        width 100%
+        gap: 20px
+
+        > *
+          flex: 0 0 25%;
+          box-sizing: border-box;
+
+
 .unread
-  font-weight 500
+  font-weight 600
+
+@media (max-width: 768px)
+  .item
+    padding 10px !important
+    background-color #ffffff
+    border 1px solid #DDE9F6
+
+  .conversationinfo
+    gap 10px !important
+    flex-direction column
+
+  .list
+    width 100%
+    display flex
+    flex-direction column
+    gap: 10px
+
+
 </style>
