@@ -22,7 +22,7 @@
       div
         UserBtn(
           v-bind:active="false"
-          v-on:click="submit"
+          v-on:mousedown="submit"
           color="blue"
           v-bind:disabled="isLoading"
           v-bind:loading="loading"
@@ -155,7 +155,7 @@
                   this.msg = this.$t('user.account_not_confirmed');
                   break;
                 default:
-                  this.msg = this.$t('Neteisingi duomenys');
+                  this.msg = this.$t('duomenys');
                   break;
               }
             } else {

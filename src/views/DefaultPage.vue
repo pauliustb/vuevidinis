@@ -2,7 +2,6 @@
   div.page.menu-paddingtop
     UserLoader(color="dark" v-if="loading")
     div(v-else)
-      //- TopPage(v-bind:title="data.title" v-bind:text="data.intro" v-bind:img="data.img || null" v-bind:lefto="false" v-bind:righto="true")
       TopPage(v-bind:title="data.title" v-bind:text="data.intro" v-bind:img="null" v-bind:lefto="false" v-bind:righto="true")
       div.container
         UserWyswyg(v-bind:html="data.text")

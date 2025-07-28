@@ -278,6 +278,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
+    (to, savedPosition, from);
     if (to?.meta?.title) {
       document.title = `${to.meta.title} | Mentoriai`;
     }

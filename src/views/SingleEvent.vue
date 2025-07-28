@@ -203,16 +203,16 @@ export default {
 
 
         const ical = `data:text/calendar;charset=utf8,BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-URL:${this.single.share_link}
-DTSTART:${dateStart}
-DTEND:${dateEnd}
-SUMMARY:${this.single.title}
-DESCRIPTION:
-LOCATION:${this.single.vieta}
-END:VEVENT
-END:VCALENDAR`;
+          VERSION:2.0
+          BEGIN:VEVENT
+          URL:${this.single.share_link}
+          DTSTART:${dateStart}
+          DTEND:${dateEnd}
+          SUMMARY:${this.single.title}
+          DESCRIPTION:
+          LOCATION:${this.single.vieta}
+          END:VEVENT
+          END:VCALENDAR`;
         const google = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURI(this.single.title)}&dates=${dateStart}/${dateEnd}&details=&location=${encodeURI(this.single.vieta)}&ctz=Europe/Vilnius`;
         if (type === 'ical') {
           window.open(ical, '_blank');
@@ -228,11 +228,19 @@ END:VCALENDAR`;
     },
   },
   watch: {
-    '$route.params.id': {
+    '$route.params.slug': {
       handler() {
         this.loading = true;
+
         this.$store.dispatch('Events/getSingle', this.$route.params.slug).then(() => {
           this.loading = false;
+
+          this.$nextTick(() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          });
         });
       },
       deep: false,

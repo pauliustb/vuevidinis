@@ -75,7 +75,7 @@ export default {
       if (valid === true) {
         this.disabled = true;
         this.loading = true;
-        // console.log(this.userID);
+        // (this.userID);
 
         try {
           const userId = await this.$store.dispatch('user/getUserId');

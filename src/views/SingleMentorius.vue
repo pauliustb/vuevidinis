@@ -20,12 +20,13 @@
                       div.text(v-if="item.text" v-html="item.text")
                       div.tax(v-if="item.taxs")
                         div(v-for="tax in item.taxs") {{tax}}
-                      <star-rating :rating="average_rating" active-color="#246cb5" :show-rating="false" :star-size="20" :read-only="true" :increment="0.01"></star-rating>
-                      div.review-count(v-if="reviews > 0" @click="reviewList" style="cursor: pointer") | {{$t('singlementorius.atsiliepimu')}}: {{ reviews }}
-                      div.review-count(v-else) Įvertinimų nėra
-                      div.btnc(v-if="$route.name==='SingleDynamicMentorius' && user.role === 'frontuser'")
-                        UserBtn(v-bind:href="'#'" v-on:click="email" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.emailme')" textAligin="center")
-                        UserBtn(v-bind:href="'#'" v-on:click="review" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.review')" textAligin="center")
+                      div(v-if="storeName === 'MentoriaiDynamic'")
+                        <star-rating :rating="average_rating" active-color="#246cb5" :show-rating="false" :star-size="20" :read-only="true" :increment="0.01"></star-rating>
+                        div.review-count(v-if="reviews > 0" @click="reviewList" style="cursor: pointer") | {{$t('singlementorius.atsiliepimu')}}: {{ reviews }}
+                        div.review-count(v-else) Įvertinimų nėra
+                        div.btnc(v-if="$route.name==='SingleDynamicMentorius' && user.role === 'frontuser'")
+                          UserBtn(v-bind:href="'#'" v-on:click="email" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.emailme')" textAligin="center")
+                          UserBtn(v-bind:href="'#'" v-on:click="review" v-bind:active="false" color="blue" v-bind:disabled="item.paskyrosUzimtumas ? true : false" v-bind:loading="false" v-bind:uppercase="false" v-bind:text="$t('singlementorius.review')" textAligin="center")
                       div.busy-mentor(v-if="item.paskyrosUzimtumas")
                         div.busy-icon
                           icon(:data="calendarData" width="20" height="20" color="#FFFFFF")
@@ -191,26 +192,35 @@
   }
 },
     watch: {
-  '$route.params.slug': {
-    async handler() {
-      this.loading = true;
-      try {
-        await this.$store.dispatch(`${this.storeName}/getSingle`, this.$route.params.slug);
-        this.loading = false;
-        if (!this.item) {
-          this.$router.push({ name: 'Home' });
-        } else if (this.storeName === 'MentoriaiDynamic' && this.item?.id) {
-          await this.$store.dispatch('Statistic/setOpen', { id: this.item.id, taxs_id: this.item.taxs_id });
-        }
-        await this.fetchReviews();
-      } catch (error) {
-        console.error('Error fetching item:', error);
-        this.loading = false;
-        this.$router.push({ name: 'Home' });
-      }
-    },
-    immediate: true,
-  },
+      '$route.params.slug': {
+        async handler() {
+          this.loading = true;
+          try {
+            await this.$store.dispatch(`${this.storeName}/getSingle`, this.$route.params.slug);
+            this.loading = false;
+
+            if (!this.item) {
+              this.$router.push({ name: 'Home' });
+            } else if (this.storeName === 'MentoriaiDynamic' && this.item?.id) {
+              await this.$store.dispatch('Statistic/setOpen', {
+                id: this.item.id,
+                taxs_id: this.item.taxs_id,
+              });
+
+              await this.fetchReviews();
+            }
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          } catch (error) {
+            console.error('Error fetching item:', error);
+            this.loading = false;
+            this.$router.push({ name: 'Home' });
+          }
+        },
+        immediate: true,
+      },
 },
   };
   </script>
