@@ -9,8 +9,8 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import 'babel-polyfill';
 import '@yzfe/vue-svgicon-polyfill';
-import VueGtag from 'vue-gtag';
-import Cookies from 'js-cookie';
+// import VueGtag from 'vue-gtag';
+// import Cookies from 'js-cookie';
 import i18n from './i18n';
 import VueClickAway from 'vue3-click-away';
 import Popper from "vue3-popper";
@@ -32,11 +32,11 @@ import vSelect from "vue-select";
 // import vSelect from 'vue-select';
 
 const app = createApp(App).component("v-select", vSelect );
-let enabled = Cookies.get('treciujusaliu') !== '0';
+// let enabled = Cookies.get('treciujusaliu') !== '0';
 
-app.use(VueReCaptcha, { siteKey: '6LcO4NsqAAAAANStjRRXnzIr8Kszmu-_6tAy6W95' });
+app.use(VueReCaptcha, { siteKey: process.env.VUE_APP_IS_PRODUCTION === 'false' ? process.env.VUE_APP_DEV_SITE_KEY : process.env.VUE_APP_PROD_SITE_KEY });
 app.use(i18n);
-app.use(VueGtag, { config: { id: 'G-01CZP75M2J' }, enabled });
+// app.use(VueGtag, { config: { id: 'G-01CZP75M2J' }, enabled });
 app.use(store);
 app.component("UserPopper", Popper);
 app.use(router);
@@ -81,7 +81,7 @@ Object.entries(globalComponents).forEach(([name, component]) => app.component(na
 
 app.use(VueClickAway);
 app.config.productionTip = false;
-axios.defaults.baseURL = 'https://test-mentoriai.inovacijuagentura.lt/';
+axios.defaults.baseURL = process.env.VUE_APP_IS_PRODUCTION === 'false' ? process.env.VUE_APP_DEV_BASE_URL : process.env.VUE_APP_PROD_BASE_URL;
 
 if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual';
@@ -93,7 +93,7 @@ store.dispatch('Pages/getHome')
     .then(() => router.isReady())
     .then(() => store.dispatch('user/getCurrent'))
     .then((result) => {
-
+        (axios.defaults.baseURL);
         if (result.status && result.user) {
             store.commit('user/setUser', { role: result.role, ...result.user });
         } else {

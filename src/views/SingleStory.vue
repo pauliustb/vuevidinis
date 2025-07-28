@@ -47,6 +47,11 @@ export default {
         await this.$store.dispatch('Stories/getSingle', this.$route.params.slug);
         if (this.single) {
           this.loading = false;
+
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
         } else {
           console.error('Single story data not found!');
         }
@@ -67,6 +72,6 @@ export default {
   padding-bottom 0px
   background-color #fff
   .container
-    max-width 800px
+    max-width 1240px
     margin-bottom 60px
 </style>

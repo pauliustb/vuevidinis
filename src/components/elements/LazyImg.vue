@@ -1,17 +1,18 @@
 <template lang="pug">
-  div(ref="target" :class="{ cover: cover }")
+  div.img(ref="target" :class="{ cover: cover }")
     img(
       v-if="image && image.placeholder"
-      :src="image.placeholder.src"
+    :src="image.placeholder.src"
       :height="image.placeholder.h"
       :width="image.placeholder.w"
-      :class="{ full_loaded: full_img_loaded }"
+      :class="{ 'hide-placeholder': full_img_loaded }"
     ).placeholder
     img(
       v-if="full_img_loaded && image && image.resized"
       :src="image.resized.src"
       :height="image.resized.h"
       :width="image.resized.w"
+      :class="{ 'show-loaded': full_img_loaded }"
     ).loaded
 </template>
 
@@ -28,19 +29,22 @@ export default {
 
     onMounted(() => {
       observer.value = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && props.image && props.image.resized) { //Patikrinam props.image
-            const newImg = new Image();
-            newImg.onload = () => {
-              full_img_loaded.value = true;
-            };
-            newImg.src = props.image.resized.src;
+          ([entry]) => {
+            if (entry.isIntersecting && props.image && props.image.resized) {
+              const newImg = new Image();
+              newImg.onload = () => {
+                full_img_loaded.value = true;
+              };
+              newImg.src = props.image.resized.src;
+              if (target.value) {
+                observer.value.unobserve(target.value);
+              }
+            }
+          },
+          {
+            threshold: 0,
+            rootMargin: '100px',
           }
-        },
-        {
-          threshold: 0,
-          rootMargin: '100px',
-        }
       );
 
       if (target.value) {
@@ -63,38 +67,47 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.img {
-  overflow: hidden;
-  position: relative;
-  &.cover {
-    width: 100%;
-    height: 100%;
-    img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-  img {
-    display: block;
-    object-fit: cover;
-    max-width: 100%;
+.img
+  overflow hidden
+  position relative
+  width 100%
+  height 100%
+
+  &.cover
+    img
+      width 100%
+      height 100%
+      object-fit cover !important
+
+  img
+    display block
+    object-fit cover
+    max-width 100%
     height: auto;
-  }
-  .placeholder {
-    position: relative;
-    z-index: 2;
+
+  .placeholder
+    position relative
+    z-index 2
     filter: blur(2vw);
     transform: scale(1);
-    transition: 1s all;
-    &.full_loaded {
-      opacity: 0;
-      transform: scale(1);
-    }
-  }
-  .loaded {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-  }
-}
+    transition 1s all;
+
+    &.hide-placeholder
+      opacity 0;
+      transform: scale(1.05);
+
+  .loaded
+    position absolute
+    left 0px
+    top 0px
+    width 100%
+    height 100%
+    z-index 1
+    opacity 0
+    transition opacity 1s ease-in-out;
+
+    &.show-loaded
+      opacity 1
+      z-index 2
+
 </style>
